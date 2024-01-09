@@ -1,20 +1,20 @@
 class ElDev {
     /*Electricity device
-    property specification:
+    Property specification:
         #psu - power supply (alternating current ('AC')/ direct current ('DC')
         #voltage - supply voltage ([V])
         #power - device power([W])
         #status - device is on ('ON') or off ('OFF')
-        #usable - 'True' if usable
-        #powerOnCounter
-    out parameters:
-        voltage_in - input voltage 
-    method specification:
-        on(voltage_in='') - device enable
-        off() - device disable
-        report() - show status info
+        #powerOnCounter - counts how many time the device has been turned on
+        #isbroken - is the device broken
+        #plugged - plugged into the wall
+    Method specification:
+        Toggle() - changes the status if it's plugged in
+        Plug() - plug or unplugs device
+        Brake() - breaks device
+        Repair() - repairs device
     */
-        #psutype; #voltage; #power; #status; #powerOnCounter; #isbroken; #plugged
+    #psutype; #voltage; #power; #status; #powerOnCounter; #isbroken; #plugged
     constructor(psutype, voltage, power, status, plugged) {
         this.psutype = psutype
         this.voltage = voltage
@@ -121,43 +121,69 @@ class ElDev {
     }
 }
 
-    class AGDDev extends ElDev {
-        /* AGD device
-                property specification:
-                    #lCycles - life cycles,
-                    #width, #height, #depth - device size
-                    #weight - device weight
-                    #typeDev - e.g. fridge, toaster, electric kettle, iron, washing machine,
-                        hair dryer,  clothes dryer, razor, hair trimmer, dishwasher, cleaner, juicer, mixer, blender,
-                        coffee grinder, meat grinder, air humidifier, coffee machine, electric cooker, microwave,
-                        waffle maker, fryer, food processor, electric oven, planetary robot, steamer, mushroom dryer,
-                        fruit dryer, boiler, electric heater, freezer, hair curler,
-                    #n
-                        #MTBF
+class AGDDev extends ElDev {
+    /* AGD device
+    Property specification:
+        #typeDev - type of the device (for eg. steamer, cooker, washer etc.)
+        #energyClass - energy class according to the standard in 2024 in Europe
+        #mtbf - maintaince time before failure
+        #width - width
+        #height - height
+        #depth - depth 
+        #weight - weight
+    */
+    #typeDev; #energyClass; #mtbf;  #width; #height; #depth; #weight 
+    constructor(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight) {
+        super(psutype, voltage, power, status, plugged)
+        this.#typeDev = typeDev
+        this.#energyClass = energyClass
+        this.mtbf = mtbf
+        this.width = width
+        this.height = height
+        this.depth = depth
+        this.weight = weight
+    }
+    
+    // Device type
 
-        */
-        #typeDev; #energyClass; #MTBF;  #width; #height; #depth; #weight 
-       constructor(psutype, voltage, power, status, plugged, typeDev, energyClass, MTBF,  width, height, depth, weight) {
-           super(psutype, voltage, power, status, plugged)
-           this.#typeDev = typeDev
-           this.#energyClass = energyClass
-           this.#MTBF = MTBF
-           this.#width = width
-           this.#height = height
-           this.#depth = depth
-           this.#weight = weight
-       }
+    // Maybe add another error and/or limits
+    set typeDev(typeDev){
+        if(!(typeof(typeDev) == "string")){
+            throw new TypeError("The parameter 'typeDev' must be a string!")
+        }
+        this.#typeDev = typeDev
+    }
+    get typeDev(){ return this.#typeDev}
+
+    // Energy class
+
+    set energyClass(energyClass){
+
+    }
+    get energyClass(){ return this.#energyClass} 
+    // MTBF
+
+    set mtbf(mtbf){
+        if(!(typeof(mtbf) == "number")){
+            throw new TypeError("The parameter 'mtbf' must be a number!")
+        }
+        if(mtbf < 0){
+            throw new RangeError("The value of the parameter 'mtbf' must not less than 0!")
+        }
+        this.#mtbf = mtbf
+    }
+    get mtbf(){ return this.#mtbf}
 
     // Width
 
     set width(width){
-    if(!(typeof(width) == "number")){
-        throw new TypeError("The parameter 'width' must be a number!")
-    }
-    if(width < 0){
-        throw new RangeError("The value of the parameter 'width' must not less than 0!")
-    }
-    this.#width = width
+        if(!(typeof(width) == "number")){
+            throw new TypeError("The parameter 'width' must be a number!")
+        }
+        if(width < 0){
+            throw new RangeError("The value of the parameter 'width' must not less than 0!")
+        }
+        this.#width = width
     }
     get width(){ return this.#width}
 
@@ -171,8 +197,8 @@ class ElDev {
             throw new RangeError("The value of the parameter 'height' must not less than 0!")
         }
         this.#height = height
-        }
-        get height(){ return this.#height}
+    }
+    get height(){ return this.#height}
 
     // Depth
 
@@ -184,8 +210,8 @@ class ElDev {
             throw new RangeError("The value of the parameter 'depth' must not less than 0!")
         }
         this.#depth = depth
-        }
-        get depth(){ return this.#depth}
+    }
+    get depth(){ return this.#depth}
 
     // Weight
 
@@ -197,8 +223,8 @@ class ElDev {
             throw new RangeError("The value of the parameter 'weight' must not less than 0!")
         }
         this.#weight = weight
-        }
-        get weight(){ return this.#weight}
+    }
+    get weight(){ return this.#weight}
 
        
 
