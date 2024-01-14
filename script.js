@@ -127,16 +127,16 @@ class AGDDev extends ElDev {
         #typeDev - type of the device (for eg. steamer, cooker, washer etc.)
         #energyClass - energy class according to the standard in 2024 in Europe (one capital letter , egz. "A", "G")
         #mtbf - maintaince time before failure
-        #width - width
-        #height - height
-        #depth - depth 
-        #weight - weight
+        #width - width in mm
+        #height - height in mm
+        #depth - depth in mm
+        #weight - weight in kg
     */
     #typeDev; #energyClass; #mtbf;  #width; #height; #depth; #weight 
     constructor(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight) {
         super(psutype, voltage, power, status, plugged)
-        this.#typeDev = typeDev
-        this.#energyClass = energyClass
+        this.typeDev = typeDev
+        this.energyClass = energyClass
         this.mtbf = mtbf
         this.width = width
         this.height = height
@@ -158,7 +158,7 @@ class AGDDev extends ElDev {
     // Energy class
 
     set energyClass(energyClass){
-        let re = new RegExp("^[A-G]$")
+        let re = new RegExp("^[A-G]$|^None$")
         if (!re.test(energyClass)) {
             throw new Error(`Energy class can contain only one symbol from A to G!`)
         }
@@ -233,12 +233,23 @@ class AGDDev extends ElDev {
 
 }
 
-class steamer extends AGDDev{
-    #manufacturer; #container
-    constructor(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight, manufacturer, container){
+class Steamer extends AGDDev{
+    /* Steamer
+    Property specification:
+        #manufacturer - steamer manufacturer
+        #container - capacity of steamer water container (in ml)
+        #calbe - caple length
+        #color - steamer color
+        #material - base coating
+    */
+    #manufacturer; #container; #cable; #color; #material; 
+    constructor(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight, manufacturer, container, cable, color, material){
         super(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight)
         this.manufacturer = manufacturer
         this.container = container
+        this.cable = cable
+        this.color = color
+        this.material = material
     }
 
     // Manufacturer
@@ -254,10 +265,72 @@ class steamer extends AGDDev{
     // Container
 
     set container(container){
-        if(!(typeof(container) == "string")){
-            throw new TypeError("The parameter 'container' must be a string!")
+        if(!(typeof(container) == "number")){
+            throw new TypeError("The parameter 'container' must be a number!")
         }
         this.#container = container
     }
     get container(){ return this.#container}
+
+    // Cable
+
+    set cable(cable){
+        if(!(typeof(cable) == "number")){
+            throw new TypeError("The parameter 'cable' must be a number!")
+        }
+        this.#cable = cable
+    }
+    get cable(){ return this.#cable}
+
+    // Color
+
+    set color(color){
+        if(!(typeof(color) == "string")){
+            throw new TypeError("The parameter 'color' must be a string!")
+        }
+        this.#color = color
+    }
+    get color(){ return this.#color}
+
+    // Material
+
+    set material(material){
+        if(!(typeof(material) == "string")){
+            throw new TypeError("The parameter 'material' must be a string!")
+        }
+        this.#material = material
+    }
+    get material() {return this.#material}
+}
+
+// Steamer based on Electrolux Refine 700
+// This device does not have a energy class
+
+var mySteamer = new Steamer("AC", 230, 1400, "OFF", false, "Parownica", "None", 5, 124, 153.5, 344, 0.825, "Electrolux", 100, 3, "Granatowy", "Ceramiczna")
+
+function paramLister(){
+    let list = document.getElementById("paramList")
+    list.innerHTML = `<li>Rodzaj zasilania: ${mySteamer.psutype}</li>
+    <li>Napięcie: ${mySteamer.voltage}</li>
+    <li>Moc: ${mySteamer.power}</li>
+    <li>Aktualny status: ${mySteamer.status}</li>
+    <li>Czy podłączone: ${mySteamer.plugged}</li>
+    <li>Nazwa urządzenia: ${mySteamer.typeDev}</li>
+    <li>Klasa energetyczna: ${mySteamer.energyClass}</li>
+    <li>MTBF: ${mySteamer.mtbf}</li>
+    <li>Szerokość: ${mySteamer.width}</li>
+    <li>Wysokość: ${mySteamer.height}</li>
+    <li>Głębokość: ${mySteamer.depth}</li>
+    <li>Waga: ${mySteamer.weight}</li>
+    <li>Producent: ${mySteamer.manufacturer}</li>
+    <li>Pojemność zbiornika: ${mySteamer.container}</li>
+    <li>Długość przewodu: ${mySteamer.cable}</li>
+    <li>Kolor: ${mySteamer.color}</li>
+    <li>Powłoka podstawy: ${mySteamer.material}</li>`
+}
+paramLister()
+
+function changeDiv(){
+    document.getElementById("param").style.visibility = "hidden"
+    document.getElementById("dev").style.visibility = "visible"
 }
