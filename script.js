@@ -20,8 +20,8 @@ class ElDev {
         this.voltage = voltage
         this.power = power
         this.status = status
-        this.#powerOnCounter = 0
-        this.#isbroken = false
+        this.powerOnCounter = 0
+        this.isbroken = false
         this.plugged = plugged
     }
 
@@ -72,11 +72,21 @@ class ElDev {
     get status(){ return this.#status}
 
     // Power on counter
-
+    set powerOnCounter(powerOnCounter){
+        if(!(typeof(powerOnCounter) == "number")){
+            throw new TypeError("The parameter 'powerOnCounter' must be a number!")
+        }
+        this.#powerOnCounter = powerOnCounter
+    }
     get powerOnCounter(){ return this.#powerOnCounter}
 
     // Broken status
-
+    set isbroken(isbroken){
+        if(!(typeof(isbroken) == "boolean")){
+            throw new TypeError("The parameter 'isbroken' must be a boolean!")
+        }
+        this.#isbroken = isbroken
+    }
     get isbroken(){ return this.#isbroken}
 
     // Plugged
@@ -95,12 +105,12 @@ class ElDev {
         if(this.plugged == false){
             return "Device is not plugged in"
         }
-        if(this.#isbroken){
+        if(this.isbroken){
             document.getElementById("togg").innerHTML = "Urządzenie jest uszkodzone"
             return "Device is broken"
         }
         if(this.status == "OFF"){
-            this.#powerOnCounter += 1
+            this.powerOnCounter += 1
             this.status = "ON"
             this.CanUse()
             if(this.powerOnCounter > 5){
@@ -134,7 +144,7 @@ class ElDev {
     // Breaking and reparing device
 
     Break(){
-        this.#isbroken = true
+        this.isbroken = true
         this.status = "OFF"
         this.plugged = false
         document.getElementById("plug").setAttribute("disabled", "disabled")
@@ -142,8 +152,8 @@ class ElDev {
         this.CanUse()
     }
     Repair() {
-        this.#isbroken = false
-        this.#powerOnCounter = 0
+        this.isbroken = false
+        this.powerOnCounter = 0
         document.getElementById("togg").innerHTML = this.status
         document.getElementById("plug").removeAttribute("disabled")
     }
@@ -278,8 +288,8 @@ class Steamer extends AGDDev{
         this.cable = cable
         this.color = color
         this.material = material
-        this.#container = 0
-        this.#containerUsage = 0
+        this.container = 0
+        this.containerUsage = 0
     }
 
     // Manufacturer
@@ -332,18 +342,30 @@ class Steamer extends AGDDev{
     }
     get material() {return this.#material}
 
+    set container(container){
+        if(!(typeof(container) == "number")){
+            throw new TypeError("The parameter 'container' must be a number!")
+        }
+        this.#container = container
+    }
     get container(){ return this.#container}
 
+    set containerUsage(containerUsage){
+        if(!(typeof(containerUsage) == "number")){
+            throw new TypeError("The parameter 'containerUsage' must be a number!")
+        }
+        this.#containerUsage = containerUsage
+    }
     get containerUsage(){ return this.#containerUsage}
 
     Fill(){
-        this.#containerUsage = 100
+        this.containerUsage = this.container
         document.getElementById("fill").innerHTML = this.containerUsage
         this.CanUse()
     }
     Use(){
         if (this.containerUsage > 0){
-            this.#containerUsage = this.containerUsage - 10
+            this.containerUsage = this.containerUsage - 10
             document.getElementById("fill").innerHTML = this.containerUsage
             this.CanUse()
         }  
