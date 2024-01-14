@@ -184,7 +184,6 @@ class AGDDev extends ElDev {
     
     // Device type
 
-    // Maybe add another error and/or limits
     set typeDev(typeDev){
         if(!(typeof(typeDev) == "string")){
             throw new TypeError("The parameter 'typeDev' must be a string!")
@@ -288,7 +287,7 @@ class Steamer extends AGDDev{
         this.cable = cable
         this.color = color
         this.material = material
-        this.container = 0
+        this.container = container
         this.containerUsage = 0
     }
 
@@ -342,6 +341,8 @@ class Steamer extends AGDDev{
     }
     get material() {return this.#material}
 
+    // Container
+
     set container(container){
         if(!(typeof(container) == "number")){
             throw new TypeError("The parameter 'container' must be a number!")
@@ -349,6 +350,8 @@ class Steamer extends AGDDev{
         this.#container = container
     }
     get container(){ return this.#container}
+
+    // Container Usage
 
     set containerUsage(containerUsage){
         if(!(typeof(containerUsage) == "number")){
@@ -358,18 +361,30 @@ class Steamer extends AGDDev{
     }
     get containerUsage(){ return this.#containerUsage}
 
-    Fill(){
+    async Fill(){
         this.containerUsage = this.container
         document.getElementById("fill").innerHTML = this.containerUsage
+        document.getElementById("image").src = "pojemnik.png"
+        document.getElementById("dev").style.display = "none"
+        await new Promise(resolve => setTimeout(resolve, 3000)) // Skopiowane
+        document.getElementById("dev").style.display = "block"
+        document.getElementById("image").src = "parownica.jpg"
         this.CanUse()
     }
-    Use(){
+    async Use(){
         if (this.containerUsage > 0){
+            document.getElementById("image").src = "paruje.png"
+            document.getElementById("dev").style.display = "none"
+            await new Promise(resolve => setTimeout(resolve, 3000)) // Skopiowane
+            document.getElementById("image").src = "parownica.jpg"
+            document.getElementById("dev").style.display = "block"
             this.containerUsage = this.containerUsage - 10
             document.getElementById("fill").innerHTML = this.containerUsage
             this.CanUse()
         }  
     }
+
+
     CanUse(){
         if((this.isbroken == false) && (this.status == "ON") && (this.containerUsage > 0) ){
             document.getElementById("us").removeAttribute("disabled");
@@ -384,6 +399,7 @@ class Steamer extends AGDDev{
 // This device does not have a energy class
 
 var mySteamer = new Steamer("AC", 230, 1400, "OFF", false, "Parownica", "None", 5, 124, 153.5, 344, 0.825, "Electrolux", 100, 3, "Granatowy", "Ceramiczna")
+
 
 function paramLister(){
     let list = document.getElementById("paramList")
@@ -410,4 +426,5 @@ paramLister()
 function changeDiv(){
     document.getElementById("param").style.display = "none"
     document.getElementById("dev").style.visibility = "visible"
+    document.getElementById("image").style.visibility = "visible"
 }
