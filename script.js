@@ -95,12 +95,25 @@ class ElDev {
         if(this.plugged == false){
             return "Device is not plugged in"
         }
+        if(this.#isbroken){
+            document.getElementById("togg").innerHTML = "Urządzenie jest uszkodzone"
+            return "Device is broken"
+        }
         if(this.status == "OFF"){
             this.#powerOnCounter += 1
             this.status = "ON"
+            this.CanUse()
+            if(this.powerOnCounter > 5){
+                document.getElementById("togg").innerHTML = "Urządzenie jest uszkodzone"
+                this.Break()
+                return "Device is broken"
+            }
+            document.getElementById("togg").innerHTML = this.status
         }
         else{
             this.status = "OFF"
+            document.getElementById("togg").innerHTML = this.status
+            this.CanUse()
         }
     }
 
@@ -108,6 +121,14 @@ class ElDev {
 
     Plug(){
         this.plugged = !this.plugged
+        if(this.plugged == true)
+            document.getElementById("tog").removeAttribute("disabled")
+        else{
+            document.getElementById("tog").setAttribute("disabled", "disabled")
+            this.status = "OFF"
+        }
+        document.getElementById("togg").innerHTML = this.status
+        this.CanUse()
     }
 
     // Breaking and reparing device
@@ -115,9 +136,16 @@ class ElDev {
     Break(){
         this.#isbroken = true
         this.status = "OFF"
+        this.plugged = false
+        document.getElementById("plug").setAttribute("disabled", "disabled")
+        document.getElementById("tog").setAttribute("disabled", "disabled")
+        this.CanUse()
     }
     Repair() {
         this.#isbroken = false
+        this.#powerOnCounter = 0
+        document.getElementById("togg").innerHTML = this.status
+        document.getElementById("plug").removeAttribute("disabled")
     }
 }
 
@@ -242,7 +270,7 @@ class Steamer extends AGDDev{
         #color - steamer color
         #material - base coating
     */
-    #manufacturer; #container; #cable; #color; #material; 
+    #manufacturer; #container; #cable; #color; #material; #containerUsage;
     constructor(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight, manufacturer, container, cable, color, material){
         super(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight)
         this.manufacturer = manufacturer
@@ -250,6 +278,8 @@ class Steamer extends AGDDev{
         this.cable = cable
         this.color = color
         this.material = material
+        this.#container = 0
+        this.#containerUsage = 0
     }
 
     // Manufacturer
@@ -301,6 +331,31 @@ class Steamer extends AGDDev{
         this.#material = material
     }
     get material() {return this.#material}
+
+    get container(){ return this.#container}
+
+    get containerUsage(){ return this.#containerUsage}
+
+    Fill(){
+        this.#containerUsage = 100
+        document.getElementById("fill").innerHTML = this.containerUsage
+        this.CanUse()
+    }
+    Use(){
+        if (this.containerUsage > 0){
+            this.#containerUsage = this.containerUsage - 10
+            document.getElementById("fill").innerHTML = this.containerUsage
+            this.CanUse()
+        }  
+    }
+    CanUse(){
+        if((this.isbroken == false) && (this.status == "ON") && (this.containerUsage > 0) ){
+            document.getElementById("us").removeAttribute("disabled");
+        }
+        else{
+            document.getElementById("us").setAttribute("disabled","disabled");
+        }
+    }
 }
 
 // Steamer based on Electrolux Refine 700
@@ -331,6 +386,6 @@ function paramLister(){
 paramLister()
 
 function changeDiv(){
-    document.getElementById("param").style.visibility = "hidden"
+    document.getElementById("param").style.display = "none"
     document.getElementById("dev").style.visibility = "visible"
 }

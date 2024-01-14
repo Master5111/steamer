@@ -16,10 +16,16 @@
         </fieldset>
     </div>
     <div id="dev" style="visibility: hidden">
-
+        <input type="button" value="Podłącz" onclick="mySteamer.Plug()" id="plug">
+        <input type="button" value="Włącznik" onclick="mySteamer.Toggle()" id="tog" disabled>
+        <input type="button" value="Napraw" onclick="mySteamer.Repair()">
+        <p id="togg">OFF</p>
+        <input type="button" value="Napełnij zbiornik" id="fi" onclick="mySteamer.Fill()">
+        <input type="button" value="Użyj" id="us" onclick="mySteamer.Use()" disabled>
+        <p id="fill">0</p>
+        
+        
     </div>
-
-
     <script src="script.js"></script>
 </body>
 </html>
