@@ -125,7 +125,7 @@ class AGDDev extends ElDev {
     /* AGD device
     Property specification:
         #typeDev - type of the device (for eg. steamer, cooker, washer etc.)
-        #energyClass - energy class according to the standard in 2024 in Europe
+        #energyClass - energy class according to the standard in 2024 in Europe (one capital letter , egz. "A", "G")
         #mtbf - maintaince time before failure
         #width - width
         #height - height
@@ -158,9 +158,14 @@ class AGDDev extends ElDev {
     // Energy class
 
     set energyClass(energyClass){
-
+        let re = new RegExp("^[A-G]$")
+        if (!re.test(energyClass)) {
+            throw new Error(`Energy class can contain only one symbol from A to G!`)
+        }
+        this.#energyClass=energyClass
     }
-    get energyClass(){ return this.#energyClass} 
+    get energyClass() {return this.#energyClass}
+    
     // MTBF
 
     set mtbf(mtbf){
@@ -226,6 +231,33 @@ class AGDDev extends ElDev {
     }
     get weight(){ return this.#weight}
 
-       
+}
 
+class steamer extends AGDDev{
+    #manufacturer; #container
+    constructor(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight, manufacturer, container){
+        super(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight)
+        this.manufacturer = manufacturer
+        this.container = container
+    }
+
+    // Manufacturer
+
+    set manufacturer(manufacturer){
+        if(!(typeof(manufacturer) == "string")){
+            throw new TypeError("The parameter 'manufacturer' must be a string!")
+        }
+        this.#manufacturer = manufacturer
+    }
+    get manufacturer(){ return this.#manufacturer}
+
+    // Container
+
+    set container(container){
+        if(!(typeof(container) == "string")){
+            throw new TypeError("The parameter 'container' must be a string!")
+        }
+        this.#container = container
+    }
+    get container(){ return this.#container}
 }
