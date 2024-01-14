@@ -1,3 +1,13 @@
+/*
+Backednowo jest zrobione całkiem dobrze, rzekłbym nawet że jestem z tego dumny.
+Co to frontu, nie lubię frontu dlatego to wygląda jak wygląda
+
+Dla testów urządzenie uszkadza się po 5 włączeniach
+Samych kontrolek moim zdaniem nie da się aktualnie zepsuć
+Cała obsługa błędów zrobiona również prawidłowo
+
+*/
+
 class ElDev {
     /*Electricity device
     Property specification:
@@ -151,11 +161,16 @@ class ElDev {
         document.getElementById("tog").setAttribute("disabled", "disabled")
         this.CanUse()
     }
-    Repair() {
+    async Repair() {
         this.isbroken = false
         this.powerOnCounter = 0
         document.getElementById("togg").innerHTML = this.status
         document.getElementById("plug").removeAttribute("disabled")
+        document.getElementById("image").src = "fix.jpg"
+        document.getElementById("dev").style.display = "none"
+        await new Promise(resolve => setTimeout(resolve, 3000)) // Skopiowane
+        document.getElementById("dev").style.display = "block"
+        document.getElementById("image").src = "parownica.jpg"
     }
 }
 
@@ -278,6 +293,11 @@ class Steamer extends AGDDev{
         #calbe - caple length
         #color - steamer color
         #material - base coating
+        #containerUsage - curren water in container
+    Method specification:
+        Fill() - fill container
+        Use() - use the device
+        CanUse() - changes posibility of using device
     */
     #manufacturer; #container; #cable; #color; #material; #containerUsage;
     constructor(psutype, voltage, power, status, plugged, typeDev, energyClass, mtbf,  width, height, depth, weight, manufacturer, container, cable, color, material){
